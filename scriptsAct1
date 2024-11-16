@@ -1,0 +1,340 @@
+# Creando base de datos
+use TorneoFutbol
+
+# verificamos que estemos en la base de datos con nombre TorneoFutbol
+db
+
+# creando las colecciones 
+db.createCollection("jugadores")
+db.createCollection("entrenadores")
+db.createCollection("equipos")
+db.createCollection("arbitros")
+db.createCollection("partidos")
+db.createCollection("posiciones")
+
+# verificamos que esten creados las colecciones
+show collections
+
+# inserción de datos en la coleccion de equipos
+db.equipos.insertMany([
+{
+"Nombre": "deportivo santa marta",
+"Ciudad": "santa marta",
+"Año": 1990
+},
+{
+"Nombre": "deportivo bucaramanga",
+"Ciudad": "bucaramanga",
+"Año": 1998
+}
+]);
+
+# inserción de datos en la coleccion de jugadores
+db.jugadores.insertMany([
+{
+"Nombres": "carlos",
+"Apellidos": "Garcia",
+"Edad": 22,
+"posición": "delantero",
+"Equipo": "deportivo santa marta",
+},
+{
+"Nombres": "jose",
+"Apellidos": "diaz",
+"Edad": 23,
+"posición": "arquero",
+"Equipo": "deportivo santa marta",
+},
+{
+"Nombres": "lucas",
+"Apellidos": "villa",
+"Edad": 21,
+"posición": "delantero",
+"Equipo": "deportivo bucaramanga",
+},
+{
+"Nombres": "juan",
+"Apellidos": "montero",
+"Edad": 25,
+"posición": "arquero",
+"Equipo": "deportivo bucaramanga",
+}
+]);
+
+# inserción de datos en la coleccion de entrenadores
+db.entrenadores.insertMany([
+{
+"nombre": "luis",
+"apellido": "campo",
+"edad": 37,
+"experiencia": "5 años",
+"equipo": "deportivo santa marta",
+},
+{
+"nombre": "felipe",
+"apellido": "cruz",
+"edad": 42,
+"experiencia": "7 años",
+"equipo": "deportivo bucaramanga",
+}
+]);
+
+# inserción de datos en la coleccion de arbitros
+db.arbitros.insertMany([
+{
+"nombre": "hugo",
+"apellido": "chavez",
+"edad": 42,
+"experiencia": "12 años",
+"categoria": "internacional",
+},
+{
+"nombre": "manuel",
+"apellido": "marulanda",
+"edad": 38,
+"experiencia": "6 años",
+"categoria": "nacional",
+}
+]);
+
+# inserción de datos en la coleccion de partidos
+db.partidos.insertMany([
+{
+"Fecha": ("2024-11-20T18:00:00"),
+"Equipo1": "deportivo santa marta",
+"Equipo2": "deportivo bucaramanga",
+"GolesEquipo1": 2,
+"GolesEquipo2": 1,
+"Arbitro": "hugo chavez",
+"Estadio": "Estadio de Santa Marta"
+},
+{
+"Fecha": ("2024-11-21T20:00:00Z"),
+"Equipo1": "deportivo bucaramanga",
+"Equipo2": "deportivo santa marta",
+"GolesEquipo1": 1,
+"GolesEquipo2": 3,
+"Arbitro": "manuel marulanda",
+"Estadio": "Estadio de Bucaramanga"
+}
+]);
+
+# inserción de datos en la coleccion de posiciones
+db.posiciones.insertMany([
+{
+"Equipo": "deportivo santa marta",
+"Posición": 1,
+"Puntos": 3,
+"PartidosJugados": 1,
+"PartidosGanados": 1,
+"PartidosEmpatados": 0,
+"PartidosPerdidos": 0,
+"GolesAFavor": 2,
+"GolesEnContra": 1,
+"DiferenciaGoles": 1
+},
+{
+"Equipo": "deportivo bucaramanga",
+"Posición": 2,
+"Puntos": 0,
+"PartidosJugados": 1,
+"PartidosGanados": 0,
+"PartidosEmpatados": 0,
+"PartidosPerdidos": 1,
+"GolesAFavor": 1,
+"GolesEnContra": 2,
+"DiferenciaGoles": -1
+}
+]);
+
+# Ejemplos de consultas
+# Consultar todos los documentos de una colección
+# Devolverá todos los equipos que están almacenados en la colección equipos.
+db.equipos.find().pretty()
+{
+        "_id" : ObjectId("6737ed324fa1422b8441fe3e"),
+        "Nombre" : "deportivo santa marta",
+        "Ciudad" : "santa marta",
+        "Año" : 1990
+}
+{
+        "_id" : ObjectId("6737ed324fa1422b8441fe3f"),
+        "Nombre" : "deportivo bucaramanga",
+        "Ciudad" : "bucaramanga",
+        "Año" : 1998
+}
+
+# Consultar con condiciones (filtrar por un campo específico)
+# Obtenemos todos los jugadores que pertenecen al equipo deportivo santa marta
+db.jugadores.find({"Equipo": "deportivo santa marta"}).pretty()
+{
+        "_id" : ObjectId("6737f0394fa1422b8441fe40"),
+        "Nombres" : "carlos",
+        "Apellidos" : "Garcia",
+        "Edad" : 22,
+        "posición" : "delantero",
+        "Equipo" : "deportivo santa marta"
+}
+{
+        "_id" : ObjectId("6737f0394fa1422b8441fe41"),
+        "Nombres" : "jose",
+        "Apellidos" : "diaz",
+        "Edad" : 23,
+        "posición" : "arquero",
+        "Equipo" : "deportivo santa marta"
+}
+
+# Consultar los entrenadores de un equipo específico
+# Obtenemos los entrenadores del deportivo santa marta
+db.entrenadores.find({"equipo": "deportivo santa marta"}).pretty()
+{
+        "_id" : ObjectId("6737f1ea4fa1422b8441fe44"),
+        "nombre" : "luis",
+        "apellido" : "campo",
+        "edad" : 37,
+        "experiencia" : "5 años",
+        "equipo" : "deportivo santa marta"
+}
+
+# Consultar con condiciones específicas y proyecciones
+# Podemos especificar qué campos quieres que te devuelvan en la consulta utilizando proyecciones con 0 y 1.
+db.jugadores.find(
+...   {"Equipo": "deportivo santa marta"},
+...   {"Nombres": 1, "Apellidos": 1}
+... ).pretty()
+{
+        "_id" : ObjectId("6737f0394fa1422b8441fe40"),
+        "Nombres" : "carlos",
+        "Apellidos" : "Garcia"
+}
+{
+        "_id" : ObjectId("6737f0394fa1422b8441fe41"),
+        "Nombres" : "jose",
+        "Apellidos" : "diaz"
+}
+
+# Consultar con operadores de comparación (mayor, menor)
+# En este caso, estamos usando el operador $gt (mayor que) para obtener todos los jugadores cuya edad es mayor que 22.
+db.jugadores.find({"Edad": {$gt: 22}}).pretty()
+{
+        "_id" : ObjectId("6737f0394fa1422b8441fe41"),
+        "Nombres" : "jose",
+        "Apellidos" : "diaz",
+        "Edad" : 23,
+        "posición" : "arquero",
+        "Equipo" : "deportivo santa marta"
+}
+{
+        "_id" : ObjectId("6737f0394fa1422b8441fe43"),
+        "Nombres" : "juan",
+        "Apellidos" : "montero",
+        "Edad" : 25,
+        "posición" : "arquero",
+        "Equipo" : "deportivo bucaramanga"
+}
+
+# Consultar con múltiples condiciones (AND)
+# Obtenemos todos los jugadores del equipo deportivo santa marta que tengan una edad menor a 23 años.
+db.jugadores.find({   "Equipo": "deportivo santa marta",   "Edad": {$lt: 23} }).pretty()
+{
+        "_id" : ObjectId("6737f0394fa1422b8441fe40"),
+        "Nombres" : "carlos",
+        "Apellidos" : "Garcia",
+        "Edad" : 22,
+        "posición" : "delantero",
+        "Equipo" : "deportivo santa marta"
+}
+
+# Consultar los partidos de un equipo específico
+# Obtenemos todos los partidos donde el equipo "deportivo santa marta" ha jugado, ya sea como equipo local o visitante.
+db.partidos.find({
+...   $or: [
+...     {"Equipo1": "deportivo santa marta"},
+...     {"Equipo2": "deportivo santa marta"}
+...   ]
+... }).pretty()
+{
+        "_id" : ObjectId("6737f91a4fa1422b8441fe48"),
+        "Fecha" : "2024-11-20T18:00:00",
+        "Equipo1" : "deportivo santa marta",
+        "Equipo2" : "deportivo bucaramanga",
+        "GolesEquipo1" : 2,
+        "GolesEquipo2" : 1,
+        "Arbitro" : "hugo chavez",
+        "Estadio" : "Estadio de Santa Marta"
+}
+{
+        "_id" : ObjectId("6737f91a4fa1422b8441fe49"),
+        "Fecha" : "2024-11-21T20:00:00Z",
+        "Equipo1" : "deportivo bucaramanga",
+        "Equipo2" : "deportivo santa marta",
+        "GolesEquipo1" : 1,
+        "GolesEquipo2" : 3,
+        "Arbitro" : "manuel marulanda",
+        "Estadio" : "Estadio de Bucaramanga"
+}
+
+# Consultar la posición de un equipo en la tabla
+# Obtenemos la posición y los detalles de deportivo santa marta en la tabla de posiciones
+db.posiciones.find({"Equipo": "deportivo santa marta"}).pretty()
+{
+        "_id" : ObjectId("6737f9f84fa1422b8441fe4a"),
+        "Equipo" : "deportivo santa marta",
+        "Posición" : 1,
+        "Puntos" : 3,
+        "PartidosJugados" : 1,
+        "PartidosGanados" : 1,
+        "PartidosEmpatados" : 0,
+        "PartidosPerdidos" : 0,
+        "GolesAFavor" : 2,
+        "GolesEnContra" : 1,
+        "DiferenciaGoles" : 1
+}
+
+# Consultar el líder de la tabla de posiciones (equipo con más puntos)
+# Obtenemos el equipo con más puntos en la tabla de posiciones.
+db.posiciones.find().sort({"Puntos": -1}).limit(1).pretty()
+{
+        "_id" : ObjectId("6737f9f84fa1422b8441fe4a"),
+        "Equipo" : "deportivo santa marta",
+        "Posición" : 1,
+        "Puntos" : 3,
+        "PartidosJugados" : 1,
+        "PartidosGanados" : 1,
+        "PartidosEmpatados" : 0,
+        "PartidosPerdidos" : 0,
+        "GolesAFavor" : 2,
+        "GolesEnContra" : 1,
+        "DiferenciaGoles" : 1
+}
+
+# Consultar jugadores de una posición específica
+# Obtenemos todos los jugadores que jueguen como delantero.
+db.jugadores.find({"posición": "delantero"}).pretty()
+{
+        "_id" : ObjectId("6737f0394fa1422b8441fe40"),
+        "Nombres" : "carlos",
+        "Apellidos" : "Garcia",
+        "Edad" : 22,
+        "posición" : "delantero",
+        "Equipo" : "deportivo santa marta"
+}
+{
+        "_id" : ObjectId("6737f0394fa1422b8441fe42"),
+        "Nombres" : "lucas",
+        "Apellidos" : "villa",
+        "Edad" : 21,
+        "posición" : "delantero",
+        "Equipo" : "deportivo bucaramanga"
+}
+
+# Actualizar los goles de un partido específico
+# Actualizamos los goles de un partido entre deportivo santa marta y deportivo bucaramanga.
+ db.partidos.updateOne(   {"Equipo1": "deportivo santa marta", "Equipo2": "deportivo bucaramanga"},   {$set: {"GolesEquipo1": 3, "GolesEquipo2": 1}} )
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 0 }
+
+# Eliminar un jugador específico
+db.jugadores.deleteOne({"Nombres": "Carlos", "Apellidos": "Garcia"})
+
+
+
